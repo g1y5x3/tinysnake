@@ -26,10 +26,6 @@
             max-width: 150px; /* Adjust the size of the logo as needed */
         }        
 
-        .game-container {
-            /* Add any other styling you want for the container here */
-        }
-
         .scoreboard {
             text-align: center; /* Center align the score */
             color: #FFFFFF; /* Scoreboard text color in dark mode */
@@ -71,6 +67,7 @@
         ];
 
         const food = { x: 200, y: 200 };
+
         // Constants
         const gridSize = 20; // Each grid cell size in pixels
         const gameSpeed = 150; // Milliseconds for each game tick (adjust this to control the snake's speed)
@@ -101,6 +98,11 @@
 
             // Remove the last segment of the snake to simulate movement
             snake.pop();
+
+            // Check for game over (collision with the boundary)
+            if (headX >= canvas.width || headX < 0 || headY >= canvas.height || headY < 0) {
+                gameOver();
+            }
         }
 
         // Function to update the game and draw it on the canvas
@@ -114,6 +116,13 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
 
+        // Function to handle game over
+        function gameOver() {
+            clearInterval(gameInterval);
+            alert("Game Over! Your snake collided with the boundary.");
+            location.reload();
+        }
+
         // Function to draw the game on the canvas
         function draw() {
             clearCanvas();
@@ -125,7 +134,7 @@
         draw();
 
         // Set the game loop interval
-        const gameInterval = setInterval(gameLoop, gameSpeed);    
+        const gameInterval = setInterval(gameLoop, gameSpeed);
 
     </script>
 </body>
