@@ -7,11 +7,11 @@
     <style>
         /* Dark mode styles */
         body {
+            margin: 1%;
+            padding: 2px;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Set the flex direction to column to stack the elements vertically */
             align-items: center;
-            height: 100vh;
-            margin: 0;
             background-color: #121212; /* Dark background color */
             color: #FFFFFF; /* Text color */
         }
@@ -19,17 +19,34 @@
         .logo-container {
             display: flex;
             justify-content: center;
-            margin-bottom: 20px; /* Optional: Add some spacing between the logo and the canvas */
+            margin-bottom: 0px; /* Optional: Add some spacing between the logo and the canvas */
         }
 
         .logo-container img {
-            max-width: 150px; /* Adjust the size of the logo as needed */
-        }        
+            max-width: 250px; /* Adjust the size of the logo as needed */
+            height: auto;
+            margin-bottom: 0px; /* Add some spacing between the logo and the canvas */
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }         
 
         .scoreboard {
             text-align: center; /* Center align the score */
+            font-size: 18px;
+            margin-bottom: 20px;
             color: #FFFFFF; /* Scoreboard text color in dark mode */
         }
+
+        .description {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #FFFFFF; /* Scoreboard text color in dark mode */
+        }
+
         /* Style the canvas to center it and give it a border for visibility */
         #game-canvas {
             display: block;
@@ -46,6 +63,9 @@
         <!-- Display the logo at the top of the website -->
         <div class="logo-container">
             <img src="tinysnake_logo.png" alt="TinySnake Logo">
+        </div>
+        <div class="description">
+            <p>Use the arrow keys to control the snake.</p>
         </div>
         <canvas id="game-canvas" width="400" height="400"></canvas>
         <div class="scoreboard">
@@ -74,7 +94,7 @@
 
         // Function to draw the snake
         function drawSnake() {
-            ctx.fillStyle = "#FFFFFF";
+            ctx.fillStyle = "#7CFC00";
             snake.forEach(segment => {
                 ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
             });
