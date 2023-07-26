@@ -1,173 +1,194 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TinySnake</title>
-    <style>
-        /* Dark mode styles */
-        body {
-            margin: 1%;
-            padding: 2px;
-            display: flex;
-            flex-direction: column; /* Set the flex direction to column to stack the elements vertically */
-            align-items: center;
-            background-color: #121212; /* Dark background color */
-            color: #FFFFFF; /* Text color */
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TinySnake</title>
+  <style>
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
 
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 0px; /* Optional: Add some spacing between the logo and the canvas */
-        }
+  body {
+    background: #121212;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-container img {
+    max-width: 250px; /* Adjust the size of the logo as needed */
+    height: auto;
+    margin-bottom: 0px; /* Add some spacing between the logo and the canvas */
+  }
+  a {
+    color: #FFFFFF;
+    /* text-decoration: none; Remove underlines for all links */
+  }
 
-        .logo-container img {
-            max-width: 250px; /* Adjust the size of the logo as needed */
-            height: auto;
-            margin-bottom: 0px; /* Add some spacing between the logo and the canvas */
-        }
-
-        .logo-description {
-            text-align: center;
-            font-size: 15px;
-            margin-bottom: 40px;
-            color: #FFFFFF; /* Scoreboard text color in dark mode */
-        }
-
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }         
-
-        a {
-            color: #FFFFFF;
-            /* text-decoration: none; Remove underlines for all links */
-        }
-
-        a:visited {
-            color: #FFFFFF; /* Set the color of visited links to the same color as regular links */
-        }
-
-        .scoreboard {
-            text-align: center; /* Center align the score */
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #FFFFFF; /* Scoreboard text color in dark mode */
-        }
-
-        /* Style the canvas to center it and give it a border for visibility */
-        #game-canvas {
-            display: block;
-            margin: 0 auto;
-            border: 2px solid #FFFFFF;
-        }
-
-        /* Add other dark mode styles as needed */
-    </style>
+  a:visited {
+    color: #FFFFFF; /* Set the color of visited links to the same color as regular links */
+  }  
+  canvas {
+    border: 1px solid white;
+  }
+  </style>
     <link rel="icon" href="tinysnake_logo.png" type="image/png">    
+
 </head>
 <body>
-    <div class="game-container">
-        <!-- Display the logo at the top of the website -->
-        <div class="logo-container">
-            <img src="tinysnake_logo.png" alt="TinySnake Logo">
-        </div>
-        <div class="logo-description">
-            <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
-                <p>Like the logo? You can make one too!</p>
-            </a>
-        </div>
-        <canvas id="game-canvas" width="400" height="400"></canvas>
-        <div class="scoreboard">
-            <p>Score: <span id="score">0</span></p>
-        </div>
-    </div>
+<div class="logo-container">
+    <img src="tinysnake_logo.png" alt="TinySnake Logo">
+</div>
+<div class="logo-description">
+    <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
+        <p>Like the logo? You can make one too!</p>
+    </a>
+</div>
+<canvas width="400" height="400" id="game"></canvas>
+<script>
+var canvas = document.getElementById('game');
+var context = canvas.getContext('2d');
 
-    <script>
- 
-        // Get the canvas element and its 2D rendering context
-        const canvas = document.getElementById("game-canvas");
-        const ctx = canvas.getContext("2d");
+var grid = 16;
+var count = 0;
+  
+var snake = {
+  x: 160,
+  y: 160,
+  
+  // snake velocity. moves one grid length every frame in either the x or y direction
+  dx: grid,
+  dy: 0,
+  
+  // keep track of all grids the snake body occupies
+  cells: [],
+  
+  // length of the snake. grows when eating an apple
+  maxCells: 4
+};
+var apple = {
+  x: 320,
+  y: 320
+};
 
-        // Sample data for snake and food (replace this with your game logic)
-        const snake = [
-            { x: 60, y: 60 },
-            { x: 40, y: 60 },
-            { x: 20, y: 60 }
-        ];
+// get random whole numbers in a specific range
+// @see https://stackoverflow.com/a/1527820/2124254
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 
-        const food = { x: 200, y: 200 };
+// game loop
+function loop() {
+  requestAnimationFrame(loop);
 
-        // Constants
-        const gridSize = 20; // Each grid cell size in pixels
-        const gameSpeed = 150; // Milliseconds for each game tick (adjust this to control the snake's speed)
+  // slow game loop to 15 fps instead of 60 (60/15 = 4)
+  if (++count < 4) {
+    return;
+  }
 
-        // Function to draw the snake
-        function drawSnake() {
-            ctx.fillStyle = "#7CFC00";
-            snake.forEach(segment => {
-                ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
-            });
-        }
+  count = 0;
+  context.clearRect(0,0,canvas.width,canvas.height);
 
-        // Function to draw the food
-        function drawFood() {
-            ctx.fillStyle = "#FF0000";
-            ctx.fillRect(food.x, food.y, gridSize, gridSize);
-        }
+  // move snake by it's velocity
+  snake.x += snake.dx;
+  snake.y += snake.dy;
 
-        // Function to update the snake's position based on direction
-        function updateSnakePosition() {
-            // const headX = snake[0].x + (direction === "right" ? gridSize : direction === "left" ? -gridSize : 0);
-            // const headY = snake[0].y + (direction === "down" ? gridSize : direction === "up" ? -gridSize : 0);
-            const headX = snake[0].x + gridSize; // Move right by one grid cell
-            const headY = snake[0].y;   
+  // wrap snake position horizontally on edge of screen
+  if (snake.x < 0) {
+    snake.x = canvas.width - grid;
+  }
+  else if (snake.x >= canvas.width) {
+    snake.x = 0;
+  }
+  
+  // wrap snake position vertically on edge of screen
+  if (snake.y < 0) {
+    snake.y = canvas.height - grid;
+  }
+  else if (snake.y >= canvas.height) {
+    snake.y = 0;
+  }
 
-            // Add the new head to the beginning of the snake
-            snake.unshift({ x: headX, y: headY });
+  // keep track of where snake has been. front of the array is always the head
+  snake.cells.unshift({x: snake.x, y: snake.y});
 
-            // Remove the last segment of the snake to simulate movement
-            snake.pop();
+  // remove cells as we move away from them
+  if (snake.cells.length > snake.maxCells) {
+    snake.cells.pop();
+  }
 
-            // Check for game over (collision with the boundary)
-            if (headX >= canvas.width || headX < 0 || headY >= canvas.height || headY < 0) {
-                gameOver();
-            }
-        }
+  // draw apple
+  context.fillStyle = 'red';
+  context.fillRect(apple.x, apple.y, grid-1, grid-1);
 
-        // Function to update the game and draw it on the canvas
-        function gameLoop() {
-            updateSnakePosition();
-            draw();
-        }
+  // draw snake one cell at a time
+  context.fillStyle = 'green';
+  snake.cells.forEach(function(cell, index) {
+    
+    // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
+    context.fillRect(cell.x, cell.y, grid-1, grid-1);  
 
-        // Function to clear the canvas
-        function clearCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+    // snake ate apple
+    if (cell.x === apple.x && cell.y === apple.y) {
+      snake.maxCells++;
 
-        // Function to handle game over
-        function gameOver() {
-            clearInterval(gameInterval);
-            // alert("Game Over! Your snake collided with the boundary.");
-            // location.reload();
-        }
+      // canvas is 400x400 which is 25x25 grids 
+      apple.x = getRandomInt(0, 25) * grid;
+      apple.y = getRandomInt(0, 25) * grid;
+    }
 
-        // Function to draw the game on the canvas
-        function draw() {
-            clearCanvas();
-            drawSnake();
-            drawFood();
-        }
+    // check collision with all cells after this one (modified bubble sort)
+    for (var i = index + 1; i < snake.cells.length; i++) {
+      
+      // snake occupies same space as a body part. reset game
+      if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+        snake.x = 160;
+        snake.y = 160;
+        snake.cells = [];
+        snake.maxCells = 4;
+        snake.dx = grid;
+        snake.dy = 0;
 
-        // Initial draw
-        draw();
+        apple.x = getRandomInt(0, 25) * grid;
+        apple.y = getRandomInt(0, 25) * grid;
+      }
+    }
+  });
+}
 
-        // Set the game loop interval
-        const gameInterval = setInterval(gameLoop, gameSpeed);
+// listen to keyboard events to move the snake
+document.addEventListener('keydown', function(e) {
+  // prevent snake from backtracking on itself by checking that it's 
+  // not already moving on the same axis (pressing left while moving
+  // left won't do anything, and pressing right while moving left
+  // shouldn't let you collide with your own body)
+  
+  // left arrow key
+  if (e.which === 37 && snake.dx === 0) {
+    snake.dx = -grid;
+    snake.dy = 0;
+  }
+  // up arrow key
+  else if (e.which === 38 && snake.dy === 0) {
+    snake.dy = -grid;
+    snake.dx = 0;
+  }
+  // right arrow key
+  else if (e.which === 39 && snake.dx === 0) {
+    snake.dx = grid;
+    snake.dy = 0;
+  }
+  // down arrow key
+  else if (e.which === 40 && snake.dy === 0) {
+    snake.dy = grid;
+    snake.dx = 0;
+  }
+});
 
-    </script>
+// start the game
+requestAnimationFrame(loop);
+</script>
 </body>
 </html>
