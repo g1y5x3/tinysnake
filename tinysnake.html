@@ -63,8 +63,17 @@
         const canvas = document.getElementById("game-canvas");
         const ctx = canvas.getContext("2d");
 
+        // Sample data for snake and food (replace this with your game logic)
+        const snake = [
+            { x: 60, y: 60 },
+            { x: 40, y: 60 },
+            { x: 20, y: 60 }
+        ];
+
+        const food = { x: 200, y: 200 };
         // Constants
         const gridSize = 20; // Each grid cell size in pixels
+        const gameSpeed = 150; // Milliseconds for each game tick (adjust this to control the snake's speed)
 
         // Function to draw the snake
         function drawSnake() {
@@ -80,24 +89,43 @@
             ctx.fillRect(food.x, food.y, gridSize, gridSize);
         }
 
-        // Sample data for snake and food (replace this with your game logic)
-        const snake = [
-            { x: 60, y: 60 },
-            { x: 40, y: 60 },
-            { x: 20, y: 60 }
-        ];
+        // Function to update the snake's position based on direction
+        function updateSnakePosition() {
+            // const headX = snake[0].x + (direction === "right" ? gridSize : direction === "left" ? -gridSize : 0);
+            // const headY = snake[0].y + (direction === "down" ? gridSize : direction === "up" ? -gridSize : 0);
+            const headX = snake[0].x + gridSize; // Move right by one grid cell
+            const headY = snake[0].y;   
 
-        const food = { x: 200, y: 200 };
+            // Add the new head to the beginning of the snake
+            snake.unshift({ x: headX, y: headY });
+
+            // Remove the last segment of the snake to simulate movement
+            snake.pop();
+        }
+
+        // Function to update the game and draw it on the canvas
+        function gameLoop() {
+            updateSnakePosition();
+            draw();
+        }
+
+        // Function to clear the canvas
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
 
         // Function to draw the game on the canvas
         function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            clearCanvas();
             drawSnake();
             drawFood();
         }
 
         // Initial draw
         draw();
+
+        // Set the game loop interval
+        const gameInterval = setInterval(gameLoop, gameSpeed);    
 
     </script>
 </body>
