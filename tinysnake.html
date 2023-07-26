@@ -27,21 +27,31 @@
             height: auto;
             margin-bottom: 0px; /* Add some spacing between the logo and the canvas */
         }
+
+        .logo-description {
+            text-align: center;
+            font-size: 15px;
+            margin-bottom: 40px;
+            color: #FFFFFF; /* Scoreboard text color in dark mode */
+        }
+
         .game-container {
             display: flex;
             flex-direction: column;
             align-items: center;
         }         
 
-        .scoreboard {
-            text-align: center; /* Center align the score */
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #FFFFFF; /* Scoreboard text color in dark mode */
+        a {
+            color: #FFFFFF;
+            /* text-decoration: none; Remove underlines for all links */
         }
 
-        .description {
-            text-align: center;
+        a:visited {
+            color: #FFFFFF; /* Set the color of visited links to the same color as regular links */
+        }
+
+        .scoreboard {
+            text-align: center; /* Center align the score */
             font-size: 18px;
             margin-bottom: 20px;
             color: #FFFFFF; /* Scoreboard text color in dark mode */
@@ -62,12 +72,12 @@
     <div class="game-container">
         <!-- Display the logo at the top of the website -->
         <div class="logo-container">
-            <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
-                <img src="tinysnake_logo.png" alt="TinySnake Logo">
-            </a>
+            <img src="tinysnake_logo.png" alt="TinySnake Logo">
         </div>
-        <div class="description">
-            <p>Use the arrow keys to control the snake.</p>
+        <div class="logo-description">
+            <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
+                <p>Like the logo? You can make one too!</p>
+            </a>
         </div>
         <canvas id="game-canvas" width="400" height="400"></canvas>
         <div class="scoreboard">
@@ -142,7 +152,7 @@
         function gameOver() {
             clearInterval(gameInterval);
             // alert("Game Over! Your snake collided with the boundary.");
-            location.reload();
+            // location.reload();
         }
 
         // Function to draw the game on the canvas
