@@ -62,7 +62,9 @@
     <div class="game-container">
         <!-- Display the logo at the top of the website -->
         <div class="logo-container">
-            <img src="tinysnake_logo.png" alt="TinySnake Logo">
+            <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
+                <img src="tinysnake_logo.png" alt="TinySnake Logo">
+            </a>
         </div>
         <div class="description">
             <p>Use the arrow keys to control the snake.</p>
@@ -139,7 +141,7 @@
         // Function to handle game over
         function gameOver() {
             clearInterval(gameInterval);
-            alert("Game Over! Your snake collided with the boundary.");
+            // alert("Game Over! Your snake collided with the boundary.");
             location.reload();
         }
 
