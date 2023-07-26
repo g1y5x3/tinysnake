@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TinySnake</title>
+    <style>
+        /* Dark mode styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #121212; /* Dark background color */
+            color: #FFFFFF; /* Text color */
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px; /* Optional: Add some spacing between the logo and the canvas */
+        }
+
+        .logo-container img {
+            max-width: 150px; /* Adjust the size of the logo as needed */
+        }        
+
+        .game-container {
+            /* Add any other styling you want for the container here */
+        }
+
+        .scoreboard {
+            text-align: center; /* Center align the score */
+            color: #FFFFFF; /* Scoreboard text color in dark mode */
+        }
+        /* Style the canvas to center it and give it a border for visibility */
+        #game-canvas {
+            display: block;
+            margin: 0 auto;
+            border: 2px solid #FFFFFF;
+        }
+
+        /* Add other dark mode styles as needed */
+    </style>
+    <link rel="icon" href="tinysnake_logo.png" type="image/png">    
+</head>
+<body>
+    <div class="game-container">
+        <!-- Display the logo at the top of the website -->
+        <div class="logo-container">
+            <img src="tinysnake_logo.png" alt="TinySnake Logo">
+        </div>
+        <canvas id="game-canvas" width="400" height="400"></canvas>
+        <div class="scoreboard">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+ 
+        // Get the canvas element and its 2D rendering context
+        const canvas = document.getElementById("game-canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Constants
+        const gridSize = 20; // Each grid cell size in pixels
+
+        // Function to draw the snake
+        function drawSnake() {
+            ctx.fillStyle = "#FFFFFF";
+            snake.forEach(segment => {
+                ctx.fillRect(segment.x, segment.y, gridSize, gridSize);
+            });
+        }
+
+        // Function to draw the food
+        function drawFood() {
+            ctx.fillStyle = "#FF0000";
+            ctx.fillRect(food.x, food.y, gridSize, gridSize);
+        }
+
+        // Sample data for snake and food (replace this with your game logic)
+        const snake = [
+            { x: 60, y: 60 },
+            { x: 40, y: 60 },
+            { x: 20, y: 60 }
+        ];
+
+        const food = { x: 200, y: 200 };
+
+        // Function to draw the game on the canvas
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+            drawSnake();
+            drawFood();
+        }
+
+        // Initial draw
+        draw();
+
+    </script>
+</body>
+</html>
