@@ -5,23 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TinySnake</title>
   <style>
-  html, body {
+  /* html, body {
     height: 100%;
     margin: 0;
-  }
+  } */
 
   body {
+    margin-top: 1%;
     background: #121212;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
   }
   .logo-container img {
     max-width: 250px; /* Adjust the size of the logo as needed */
     height: auto;
     margin-bottom: 0px; /* Add some spacing between the logo and the canvas */
   }
+
+  .logo-description {
+    color: #FFFFFF;
+  }
+
   a {
     color: #FFFFFF;
     /* text-decoration: none; Remove underlines for all links */
@@ -42,9 +48,8 @@
     <img src="tinysnake_logo.png" alt="TinySnake Logo">
 </div>
 <div class="logo-description">
-    <a href="https://github.com/tinygrad/tinygrad/blob/master/examples/stable_diffusion.py" target="_blank">
-        <p>Like the logo? You can make one too!</p>
-    </a>
+    <p>Logo was created through <a href="https://en.wikipedia.org/wiki/Stable_Diffusion" target="_blank">stable diffusion</a> powered by <a href="https://github.com/tinygrad/tinygrad/blob/master" target="_blank">tinygrad!</a></p>
+    <p></p>
 </div>
 <canvas width="400" height="400" id="game"></canvas>
 <script>
