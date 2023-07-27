@@ -19,7 +19,7 @@
     /* justify-content: center; */
   }
   .logo-container img {
-    max-width: 400px; /* Adjust the size of the logo as needed */
+    max-width: 300px; /* Adjust the size of the logo as needed */
     height: auto;
     margin-bottom: 5px; /* Add some spacing between the logo and the canvas */
   }
@@ -47,6 +47,11 @@
 <body>
 <div class="logo-container">
     <img src="tinysnake_logo.png" alt="TinySnake Logo">
+</div>
+
+<div class="description">
+  <p>Total Games Reset: <span id="game-counter">0</span></p>
+  <p id="demo"></p>
 </div>
 
 <canvas width="400" height="400" id="game"></canvas>
@@ -81,6 +86,9 @@ var apple = {
   y: 320
 };
 
+var totalGameReset = 0;
+let gameStarted = false;
+
 // get random whole numbers in a specific range
 // @see https://stackoverflow.com/a/1527820/2124254
 function getRandomInt(min, max) {
@@ -92,7 +100,7 @@ function loop() {
   requestAnimationFrame(loop);
 
   // slow game loop to 15 fps instead of 60 (60/15 = 4)
-  if (++count < 4) {
+  if (++count < 6) {
     return;
   }
 
@@ -103,22 +111,11 @@ function loop() {
   snake.x += snake.dx;
   snake.y += snake.dy;
 
-  // wrap snake position horizontally on edge of screen
-  if (snake.x < 0) {
-    snake.x = canvas.width - grid;
+  // reset the game if the snake touches the edge of screen
+  if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
+    resetgame();
   }
-  else if (snake.x >= canvas.width) {
-    snake.x = 0;
-  }
-  
-  // wrap snake position vertically on edge of screen
-  if (snake.y < 0) {
-    snake.y = canvas.height - grid;
-  }
-  else if (snake.y >= canvas.height) {
-    snake.y = 0;
-  }
-
+  snake.y >= canvas.height 
   // keep track of where snake has been. front of the array is always the head
   snake.cells.unshift({x: snake.x, y: snake.y});
 
@@ -152,18 +149,31 @@ function loop() {
       
       // snake occupies same space as a body part. reset game
       if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-        snake.x = 160;
-        snake.y = 160;
-        snake.cells = [];
-        snake.maxCells = 4;
-        snake.dx = grid;
-        snake.dy = 0;
-
-        apple.x = getRandomInt(0, 25) * grid;
-        apple.y = getRandomInt(0, 25) * grid;
+        resetgame();
       }
     }
   });
+}
+
+function resetgame() {
+  snake.x = 160;
+  snake.y = 160;
+  snake.cells = [];
+  snake.maxCells = 4;
+  snake.dx = grid;
+  snake.dy = 0;
+
+  apple.x = getRandomInt(0, 25) * grid;
+  apple.y = getRandomInt(0, 25) * grid;
+
+  totalGameReset++;
+  let text = totalGameReset.toString()
+  document.getElementById('game-counter').innerHTML = text;  
+}
+
+function startGameLoop() {
+    gameStarted = true;
+    requestAnimationFrame(loop);
 }
 
 // listen to keyboard events to move the snake
@@ -193,10 +203,13 @@ document.addEventListener('keydown', function(e) {
     snake.dy = grid;
     snake.dx = 0;
   }
+  else if (e.key === 'Enter' && !gameStarted) {
+    startGameLoop();
+  }
 });
 
 // start the game
-requestAnimationFrame(loop);
+// requestAnimationFrame(loop);
 </script>
 </body>
 </html>
