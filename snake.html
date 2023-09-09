@@ -156,6 +156,7 @@
         
         // snake occupies same space as a body part. reset game
         if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+
           resetgame();
         }
       }
@@ -174,8 +175,12 @@
     apple.y = getRandomInt(0, 25) * grid;
 
     totalGameReset++;
-    let text = totalGameReset.toString()
-    document.getElementById('game-counter').innerHTML = text;  
+    let text1 = totalGameReset.toString()
+    document.getElementById('game-counter').innerHTML = text1;
+    
+    totalScore = 0;
+    let text2 = totalScore.toString()
+    document.getElementById('game-score').innerHTML = text2;
   }
 
   function startGameLoop() {
