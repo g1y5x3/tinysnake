@@ -53,6 +53,9 @@
   var totalGameReset = 0;
   let gameStarted = false;
 
+  // Open the WebSocket connection and register event handlers.
+  const websocket = new WebSocket("ws://localhost:8001/");
+
   // get random whole numbers in a specific range
   // @see https://stackoverflow.com/a/1527820/2124254
   function getRandomInt(min, max) {
@@ -116,7 +119,6 @@
         
         // snake occupies same space as a body part. reset game
         if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-
           resetgame();
         }
       }
@@ -137,6 +139,7 @@
     totalGameReset++;
     let text1 = totalGameReset.toString()
     document.getElementById('game-counter').innerHTML = text1;
+    websocket.send(text1);
     
     totalScore = 0;
     let text2 = totalScore.toString()
