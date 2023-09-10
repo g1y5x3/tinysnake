@@ -79,48 +79,49 @@
     if (snake.x < 0 || snake.x >= canvas.width || snake.y < 0 || snake.y >= canvas.height) {
       resetgame();
     }
-    snake.y >= canvas.height 
-    // keep track of where snake has been. front of the array is always the head
-    snake.cells.unshift({x: snake.x, y: snake.y});
+    else {
+      // keep track of where snake has been. front of the array is always the head
+      snake.cells.unshift({x: snake.x, y: snake.y});
 
-    // remove cells as we move away from them
-    if (snake.cells.length > snake.maxCells) {
-      snake.cells.pop();
+      // remove cells as we move away from them
+      if (snake.cells.length > snake.maxCells) {
+        snake.cells.pop();
+      }
+
+      // draw apple
+      context.fillStyle = 'red';
+      context.fillRect(apple.x, apple.y, grid-1, grid-1);
+
+      // draw snake one cell at a time
+      context.fillStyle = 'green';
+      snake.cells.forEach(function(cell, index) {
+
+        // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
+        context.fillRect(cell.x, cell.y, grid-1, grid-1);
+
+        // snake ate apple
+        if (cell.x === apple.x && cell.y === apple.y) {
+          snake.maxCells++;
+          totalScore++;
+
+          // canvas is 400x400 which is 25x25 grids
+          apple.x = getRandomInt(0, 25) * grid;
+          apple.y = getRandomInt(0, 25) * grid;
+        }
+
+        // check collision with all cells after this one (modified bubble sort)
+        for (var i = index + 1; i < snake.cells.length; i++) {
+
+          // snake occupies same space as a body part. reset game
+          if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
+            resetgame();
+          }
+        }
+      });
     }
 
-    // draw apple
-    context.fillStyle = 'red';
-    context.fillRect(apple.x, apple.y, grid-1, grid-1);
-
-    // draw snake one cell at a time
-    context.fillStyle = 'green';
-    snake.cells.forEach(function(cell, index) {
-      
-      // drawing 1 px smaller than the grid creates a grid effect in the snake body so you can see how long it is
-      context.fillRect(cell.x, cell.y, grid-1, grid-1);  
-
-      // snake ate apple
-      if (cell.x === apple.x && cell.y === apple.y) {
-        snake.maxCells++;
-        totalScore++;
-        let text = totalScore.toString()
-        document.getElementById('game-score').innerHTML = text
-
-        // canvas is 400x400 which is 25x25 grids 
-        apple.x = getRandomInt(0, 25) * grid;
-        apple.y = getRandomInt(0, 25) * grid;
-      }
-
-      // check collision with all cells after this one (modified bubble sort)
-      for (var i = index + 1; i < snake.cells.length; i++) {
-        
-        // snake occupies same space as a body part. reset game
-        if (cell.x === snake.cells[i].x && cell.y === snake.cells[i].y) {
-
-          resetgame();
-        }
-      }
-    });
+    document.getElementById('game-counter').innerHTML = totalGameReset.toString();
+    document.getElementById('game-score').innerHTML = totalScore.toString();
   }
 
   function resetgame() {
@@ -135,12 +136,7 @@
     apple.y = getRandomInt(0, 25) * grid;
 
     totalGameReset++;
-    let text1 = totalGameReset.toString()
-    document.getElementById('game-counter').innerHTML = text1;
-    
     totalScore = 0;
-    let text2 = totalScore.toString()
-    document.getElementById('game-score').innerHTML = text2;
   }
 
   function startGameLoop() {
